@@ -24,26 +24,25 @@ local NewsApp = Player.PlayerGui:FindFirstChild("NewsApp")
 local PlayButton = NewsApp:FindFirstChild("EnclosingFrame"):FindFirstChild("MainFrame").Contents.PlayButton
 local Baby = Player.PlayerGui.DialogApp.Dialog.RoleChooserDialog.ChooseParent
 
-spawn(function()
-    while NewsApp.Enabled do wait(4)
-        
-        for i,v in pairs(getconnections(PlayButton.MouseButton1Click)) do
-            v:Fire()
-        end 
-    end 
-end)
-spawn(function()
-    while Baby.Visible do wait(1)
-        if Baby.Visible then
-            for i,v in pairs(getconnections(Baby.MouseButton1Click)) do
+RunService.Stepped:Connect(function()
+    pcall(function()
+        if Player.PlayerGui:FindFirstChild("NewsApp").Enabled then
+            for i,v in pairs(getconnections(Player.PlayerGui:FindFirstChild("NewsApp"):FindFirstChild("EnclosingFrame"):FindFirstChild("MainFrame"):FindFirstChild("Contents"):FindFirstChild("PlayButton").MouseButton1Click)) do
                 v:Fire()
             end 
         end 
-    end 
+        if Player.PlayerGui.DialogApp.Dialog.RoleChooserDialog.ChooseParent.Visible then
+            for i,v in pairs(getconnections(Player.PlayerGui.DialogApp.Dialog.RoleChooserDialog.ChooseParent.MouseButton1Click)) do
+                v:Fire()
+            end 
+        end 
+        if Workspace:FindFirstChild("ServerSidedMapSeats") then
+            Workspace.ServerSidedMapSeats:Destroy()
+        end
+    end)
 end)
-if Workspace:FindFirstChild("ServerSidedMapSeats") then
-    Workspace.ServerSidedMapSeats:Destroy()
-end
+
+
 
 local Table = {6152116144, 185655149}
 local Set = setfpscap

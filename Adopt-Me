@@ -233,11 +233,11 @@ for i, v in pairs(getgc()) do
     end
 end
 local function SetLocation(A, B, C)
-    set_thread_identity(2)
     local O = get_thread_identity()
+    set_thread_identity(2)
     Location(A, B, C)
     set_thread_identity(O)
-    return A,B,C
+    return A, B, C
 end
 function Home()
     if Workspace.HouseInteriors.blueprint:FindFirstChildWhichIsA("Model") then

@@ -58,10 +58,38 @@ spawn(function()
         pcall(function()
             v1.Network.Fire("Blow Bubble")
             v1.Network.Fire("Sell Bubbles",true)
+            Workspace:FindFirstChild("Sell2",true).CFrame = CFrame.new(Player.Character:FindFirstChild("HumanoidRootPart",true).Position + Vector3.new(0,5,0))
         end)
     end 
 end)
 end)
+
+local Toggle1 = Section1:CreateToggle("Auto Collect Coins/Dicks", Settings.Gor, function(State)
+Setting.GOr = State
+spawn(function()
+    while wait() do
+        pcall(function()
+            for i,v in pairs(Workspace.Stuff.Pickups:GetChildren()) do
+                if v:FindFirstChild("TouchInterest",true) then
+                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, v:FindFirstChild("TouchInterest",true).Parent, 0)
+                end 
+            end
+        end)
+    end
+end)
+end)
+
+local Button1 = Section1:CreateButton("Collect All Chests", function()
+for i,v in pairs(Workspace.MAP.Chests:GetChildren()) do
+    if v:IsA("BasePart") then
+        Player.Character:FindFirstChild("HumanoidRootPart",true).CFrame = v.CFrame
+        wait()
+    end 
+end 
+end)
+
+
+
 
 local Toggle1 = Section1:CreateToggle("Auto Buy Ball/Eggs", Settings.Os, function(State)
 Settings.Os = State
@@ -502,4 +530,3 @@ local Slider4 = Section4:CreateSlider("Tile Scale",0,1,nil,false, function(Value
 	Window:SetTileScale(Value)
 end)
 Slider4:SetValue(0.5)
- 

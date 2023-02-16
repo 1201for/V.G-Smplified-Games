@@ -45,6 +45,36 @@ local NoClip = function(A)
     return A:ChangeState(11)
 end 
 
+local GetClosetChest = function()
+    local Target = nil 
+    local MaxDistance = math.huge
+    for i,v in pairs(Workspace.Chests:GetChildren()) do
+        if v:IsA("Model") then
+            local Mag = (Player.Character:FindFirstChild("HumanoidRootPart",true).Position - v:GetModelCFrame().Position).magnitude
+            if Mag < MaxDistance then
+                Target = v 
+                MaxDistance = Mag   
+            end 
+        end 
+    end 
+    return Target
+end 
+
+local GetClosetOre = function()
+    local Target = nil 
+    local MaxDistance = math.huge
+    for i,v in pairs(Workspace.Ores:GetChildren()) do
+        if v:IsA("Folder") and v.Name == Settings.Location then
+            local Mag = (Player.Character:FindFirstChild("HumanoidRootPart",true).Position - v:FindFirstChildWhichIsA("Model",true):GetModelCFrame().Position).magnitude
+            if Mag < MaxDistance then
+                Target = v:FindFirstChildWhichIsA("Model",true):FindFirstChildWhichIsA("BasePart",true)
+                MaxDistance = Mag   
+            end 
+        end 
+    end 
+    return Target
+end 
+
 local Locations = {}
 for i,v in pairs(Workspace.Ores:GetChildren()) do
     if v:IsA("Folder") and v:FindFirstChildWhichIsA("Model",true) and not table.find(Locations,v.Name) then
@@ -109,27 +139,23 @@ Settings.Mine = State
 RunService.Stepped:Connect(function()
     if Settings.Mine then 
         pcall(function()
-            
+            NoClip(Player.Character:FindFirstChild("Humanoid"))
         end)
     end 
 end)
 spawn(function()
     while wait(1) and Settings.Mine do 
-        pcall(function()
+       pcall(function()
             for i,v in pairs(Player.Backpack:GetChildren()) do
                 if v:IsA("Tool") and not v:FindFirstChild("HeavyEvent",true) and v.Name:find("Pick") then
-                  Player.Character:FindFirstChildWhichIsA("Humanoid",true):EquipTool(v)
+                    Player.Character:FindFirstChildWhichIsA("Humanoid",true):EquipTool(v)
                 end 
             end 
             if Settings.Mine then
                 Hit()
                 NotHit()
             end
-            for i,v in pairs(Workspace.Ores:GetChildren()) do
-                if v:FindFirstChildWhichIsA("Model",true) and v.Name == Settings.Location then
-                    Player.Character:FindFirstChild("HumanoidRootPart",true).CFrame = v:FindFirstChildWhichIsA("Model"):GetModelCFrame() * CFrame.new(0,0,5) 
-                end 
-            end 
+            Tween(Player.Character:FindFirstChild("HumanoidRootPart",true), GetClosetOre().CFrame * CFrame.new(0,0,5),50)
         end)
     end 
 end)
@@ -140,16 +166,19 @@ local Dropdown3 = Section1:CreateDropdown("Ore Locations", Locations, function(N
 end)
 local Toggle1 = Section1:CreateToggle("Auto Chest", Settings.Stun, function(State)
 Settings.Frog = State
+
+RunService.Stepped:Connect(function()
+    pcall(function()
+        if Settings.Frog then
+            NoClip(Player.Character:FindFirstChildWhichIsA("Humanoid"))
+        end 
+    end)
+end)
 spawn(function()
     while wait() and Settings.Frog do 
         pcall(function()
-            for i,v in pairs(Workspace.Chests:GetChildren()) do
-                if v:IsA("Model") and v:FindFirstChild("Root",true) then
-                    Player.Character:FindFirstChild("HumanoidRootPart",true).CFrame = v:FindFirstChild("Root",true).CFrame
-                    wait(1)
-                    VirtualInputManager:SendKeyEvent(true,"G",false,game)
-                end 
-            end 
+            Tween(Player.Character:FindFirstChild("HumanoidRootPart",true), GetClosetChest():GetModelCFrame(),50)
+            VirtualInputManager:SendKeyEvent(true,"G",false,game)
         end)
     end 
 end)

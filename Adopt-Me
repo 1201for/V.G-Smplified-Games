@@ -41,7 +41,7 @@ RunService.Stepped:Connect(function()
                 v:Fire()
             end 
         end 
-        if Player.PlayerGui:FindFirstChild("ChooseParent",true):GetFullName() then
+        if Player.PlayerGui:FindFirstChild("ChooseParent",true) then
             for i,v in pairs(getconnections(Player.PlayerGui:FindFirstChild("ChooseParent",true).MouseButton1Click)) do
                 v:Fire()
             end 
@@ -237,6 +237,7 @@ local function SetLocation(A, B, C)
     set_thread_identity(2)
     Location(A, B, C)
     set_thread_identity(O)
+    return A, B, C
 end
 function Home()
     if Workspace.HouseInteriors.blueprint:FindFirstChildWhichIsA("Model") then
@@ -364,6 +365,7 @@ function Bed(Name)
     for i, v in pairs(Workspace.HouseInteriors.furniture:GetChildren()) do
         if v:FindFirstChildWhichIsA("Model") and (table.find(Beds, v:FindFirstChildWhichIsA("Model").Name)) then
             local String = string.split(v.Name,"true/")[2]
+            print(String)
             return String
         end
     end
@@ -372,6 +374,7 @@ function Cash()
     for i, v in pairs(Workspace.HouseInteriors.furniture:GetChildren()) do
         if v:FindFirstChildWhichIsA("Model") and (table.find(RetardedBullShit, v:FindFirstChildWhichIsA("Model").Name)) then
             local String = string.split(v.Name,"true/")[2]
+            print(String)
             return String
         end
     end
@@ -382,6 +385,7 @@ function Showers(Name)
     for i, v in pairs(Workspace.HouseInteriors.furniture:GetChildren()) do
         if v:FindFirstChildWhichIsA("Model") and (table.find(Baths, v:FindFirstChildWhichIsA("Model").Name)) then
             local String = string.split(v.Name,"true/")[2]
+            print(String)
             return String
         end
     end
@@ -448,7 +452,9 @@ if Settings.Petsd == nil then
 end
 
 
-
+local Noclip = function(A)
+    return A:ChangeState(11)
+end 
 
 
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/1201for/V.G-Hub/main/test"))()
@@ -585,7 +591,7 @@ RunService.RenderStepped:connect(
         if Settings.PetFarm then
             pcall(function()
                 Workspace["P"].CFrame = Player.Character.HumanoidRootPart.CFrame * CFrame.new(Vector3.new(0,-5,0))
-                Player.Character:FindFirstChildWhichIsA("Humanoid"):ChangeState(11)
+                Noclip(Player.Character:FindFirstChildWhichIsA("Humanoid"))
             end)
         end
     end
@@ -615,7 +621,7 @@ end
 local a
 a = {
     ['sleepy'] = function(c)
-        while c.Parent == Player.PlayerGui.AilmentsMonitorApp.Ailments do
+        while c.Parent == Player.PlayerGui.AilmentsMonitorApp.Ailments and wait(3) do
             wait()
             spawn(function()
                 pcall(function()
@@ -625,7 +631,7 @@ a = {
                 end)
             end)
         end
-        repeat wait(3) until c.Parent ~= Player.PlayerGui.AilmentsMonitorApp.Ailments
+        repeat wait() until c.Parent ~= Player.PlayerGui.AilmentsMonitorApp.Ailments
         ReplicatedStorage:FindFirstChild("ToolAPI/Unequip",true):InvokeServer(PetID)
         Pet = ReplicatedStorage:FindFirstChild("ToolAPI/Equip",true):InvokeServer(PetID)
     end,
@@ -651,7 +657,7 @@ a = {
         if not Pizza then
             return
         end
-
+        wait(2)
         ReplicatedStorage:FindFirstChild("PetObjectAPI/CreatePetObject",true):InvokeServer("__Enum_PetObjectCreatorType_2", {
             ["unique_id"] = Pizza
         })
@@ -677,7 +683,7 @@ a = {
         if not Tea then
             return
         end
-
+        wait(2)
         ReplicatedStorage:FindFirstChild("PetObjectAPI/CreatePetObject",true):InvokeServer("__Enum_PetObjectCreatorType_2", {
             ["unique_id"] = Tea
         })
@@ -687,7 +693,7 @@ a = {
         repeat wait() until c.Parent ~= Player.PlayerGui.AilmentsMonitorApp.Ailments
     end,
     ['dirty'] = function(c)
-        while c.Parent == Player.PlayerGui.AilmentsMonitorApp.Ailments do
+        while c.Parent == Player.PlayerGui.AilmentsMonitorApp.Ailments and wait(3) do
             wait()
             spawn(function()
                 pcall(function()
@@ -698,7 +704,7 @@ a = {
             end)
         end
 
-        repeat wait(3) until c.Parent ~= Player.PlayerGui.AilmentsMonitorApp.Ailments
+        repeat wait() until c.Parent ~= Player.PlayerGui.AilmentsMonitorApp.Ailments
         ReplicatedStorage:FindFirstChild("ToolAPI/Unequip",true):InvokeServer(PetID)
         Pet = ReplicatedStorage:FindFirstChild("ToolAPI/Equip",true):InvokeServer(PetID)
     end,
@@ -747,7 +753,7 @@ spawn(
     function()
         while wait() and Settings.PetFarm do
             pcall(function()
-                local Ailment = Player.PlayerGui.AilmentsMonitorApp.Ailments:FindFirstChildWhichIsA("Frame",true)
+                local Ailment = Player.PlayerGui.AilmentsMonitorApp.Ailments:FindFirstChildWhichIsA("Frame")
                 if Ailment then
                     local Name = Ailment.Name
                     if a[Name]then
@@ -1098,6 +1104,16 @@ spawn(function()
                         ReplicatedStorage.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                     end 
                 end 
+                if Settings.Petsd == "Pet Accessories" then
+                    for i, v in pairs(require(ReplicatedStorage.ClientModules.Core.ClientData).get_data()[Player.Name].inventory.pet_accessories) do
+                        ReplicatedStorage.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                    end 
+                end 
+                if Settings.Petsd == "Cars" then
+                    for i, v in pairs(require(ReplicatedStorage.ClientModules.Core.ClientData).get_data()[Players.LocalPlayer.Name].inventory.transport) do
+                        ReplicatedStorage.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
+                    end 
+                end 
                 ReplicatedStorage.API:FindFirstChild("TradeAPI/AcceptNegotiation"):FireServer()
                 ReplicatedStorage.API:FindFirstChild("TradeAPI/ConfirmTrade"):FireServer()
                 for i,v in pairs(getconnections(Player.PlayerGui.DialogApp.Dialog.NormalDialog.Buttons.ButtonTemplate.MouseButton1Click)) do
@@ -1118,7 +1134,7 @@ for i,v in pairs(Players:GetPlayers()) do
 end 
 end)
 
-local Dropdown = Section1:CreateDropdown("Auto Trade Options", {"Pets","Gifts","GrownPets","Eggs"}, function(Name)
+local Dropdown = Section1:CreateDropdown("Auto Trade Options", {"Pets","Gifts","GrownPets","Eggs","Pet Accessories","Cars"}, function(Name)
     Settings.Petsd = Name 
 end)
 

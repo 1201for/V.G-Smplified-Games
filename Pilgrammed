@@ -75,6 +75,22 @@ local GetClosetOre = function()
     return Target
 end 
 
+local GetClosetMob = function()
+    local Target = nil 
+    local MaxDistance = math.huge
+    for i,v in pairs(Workspace.Mobs:GetChildren()) do
+        if v:FindFirstChild(Settings.Mob,true) then
+            local Mag = (Player.Character:FindFirstChild("HumanoidRootPart",true).Position - v:FindFirstChild(Settings.Mob,true):GetModelCFrame().Position).magnitude
+            if Mag < MaxDistance then
+                Target = v:FindFirstChild(Settings.Mob,true)
+                MaxDistance = Mag   
+            end 
+        end 
+    end 
+    return Target
+end 
+
+
 local Locations = {}
 for i,v in pairs(Workspace.Ores:GetChildren()) do
     if v:IsA("Folder") and v:FindFirstChildWhichIsA("Model",true) and not table.find(Locations,v.Name) then
@@ -189,24 +205,14 @@ Settings.Spawn = State
 RunService.Stepped:Connect(function()
     pcall(function()
         if Settings.Spawn then
-            for i,v in pairs(Player.Character:GetChildren()) do
-                if v:IsA("BasePart") then
-                    v.velocity = Vector3.new(0,0,0)
-                else 
-                    v.Parent:Destroy()
-                end 
-            end 
+            NoClip(Player.Character:FindFirstChild("Humanoid"))
         end 
     end)
 end)
 spawn(function()
     while wait() and Settings.Spawn do 
         pcall(function()
-            for i,v in pairs(Workspace.Mobs:GetChildren()) do
-                if v:FindFirstChild(Settings.Mob,true) and v:FindFirstChild(Settings.Mob,true):FindFirstChildWhichIsA("Humanoid",true).Health ~= 0  then
-                    Player.Character:FindFirstChild("HumanoidRootPart",true).CFrame = v:FindFirstChild(Settings.Mob,true):GetModelCFrame() * CFrame.new(0,0,7) 
-                end 
-            end 
+            Tween(Player.Character:FindFirstChild("HumanoidRootPart",true), GetClosetMob():GetModelCFrame() * CFrame.new(0,0,7),50)
         end)
     end 
 end)

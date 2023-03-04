@@ -182,11 +182,11 @@ local Tasks = {
 }
 
 local Egg = {
-    "japan_2022_egg",
     "cracked_egg",
     "regular_pet_egg",
     "royal_egg",
-    "retired_egg"
+    "retired_egg",
+    "seasia_2023_egg"
 }
 
 local gifts = {
@@ -603,7 +603,7 @@ if not Settings.PetFarm then
 end 
 
 spawn(function()
-    while wait(20) and Settings.PetFarm do
+    while wait(20) and Settings.PetFarm and Settings.Refresh do
         pcall(function()
             ReplicatedStorage.API["ToolAPI/Unequip"]:InvokeServer(PetID)
             Pet = ReplicatedStorage.API["ToolAPI/Equip"]:InvokeServer(PetID)
@@ -781,6 +781,10 @@ local Dropdown = Section1:CreateDropdown("Pets", List, function(Name)
     Settings.Key = PetsShow[Name]
 end)
 
+
+local Toggle434 = Section1:CreateToggle("Auto Refresh PetFarm", Settings.Refresh, function(State)
+    Settings.Refresh = State
+end)
 
 local Toggle434 = Section1:CreateToggle("Switch Out when full grown", Settings.SwitchOutFullyGrown, function(State)
 Settings.SwitchOutFullyGrown = State
@@ -1104,16 +1108,6 @@ spawn(function()
                         ReplicatedStorage.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
                     end 
                 end 
-                if Settings.Petsd == "Pet Accessories" then
-                    for i, v in pairs(require(ReplicatedStorage.ClientModules.Core.ClientData).get_data()[Player.Name].inventory.pet_accessories) do
-                        ReplicatedStorage.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
-                    end 
-                end 
-                if Settings.Petsd == "Cars" then
-                    for i, v in pairs(require(ReplicatedStorage.ClientModules.Core.ClientData).get_data()[Players.LocalPlayer.Name].inventory.transport) do
-                        ReplicatedStorage.API:FindFirstChild("TradeAPI/AddItemToOffer"):FireServer(v.unique)
-                    end 
-                end 
                 ReplicatedStorage.API:FindFirstChild("TradeAPI/AcceptNegotiation"):FireServer()
                 ReplicatedStorage.API:FindFirstChild("TradeAPI/ConfirmTrade"):FireServer()
                 for i,v in pairs(getconnections(Player.PlayerGui.DialogApp.Dialog.NormalDialog.Buttons.ButtonTemplate.MouseButton1Click)) do
@@ -1134,7 +1128,7 @@ for i,v in pairs(Players:GetPlayers()) do
 end 
 end)
 
-local Dropdown = Section1:CreateDropdown("Auto Trade Options", {"Pets","Gifts","GrownPets","Eggs","Pet Accessories","Cars"}, function(Name)
+local Dropdown = Section1:CreateDropdown("Auto Trade Options", {"Pets","Gifts","GrownPets","Eggs"}, function(Name)
     Settings.Petsd = Name 
 end)
 
